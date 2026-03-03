@@ -38,12 +38,31 @@ open tictactoe.html
 
 ## Git Workflow
 
-After making changes:
-1. Test the changes by opening the file in a browser
-2. Stage and commit with a clear message: `git add . && git commit -m "Description"`
-3. Push to GitHub: `git push origin main`
+**IMPORTANT: Commit and push regularly to preserve all work and changes.**
 
-Keep commits atomic and focused on single features or fixes.
+After making any changes:
+1. Test the changes by opening the file in a browser
+2. Stage and commit with a clear, descriptive message: `git add . && git commit -m "Description"`
+3. Push to GitHub immediately: `git push origin main`
+
+### Commit Message Guidelines
+
+- Write clear, descriptive commit messages that explain **what changed and why**
+- Use imperative mood: "Add feature" not "Added feature"
+- Keep messages concise (50 characters or less for the summary)
+- Examples:
+  - `Add AI opponent to game`
+  - `Fix win detection bug for diagonal wins`
+  - `Improve mobile responsiveness of game board`
+
+### Why Regular Commits Matter
+
+- **Never lose work**: Commits are the source of truth for project history
+- **Easy rollback**: Can revert to any previous version if needed
+- **Clear project timeline**: Easy to see what was done and when
+- **Multiple sessions**: Future Claude instances can understand what's been done
+
+Keep commits atomic and focused on single features, fixes, or improvements. Push to GitHub after each commit to ensure it's safely backed up.
 
 ## Key Development Notes
 
