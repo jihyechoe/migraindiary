@@ -14,7 +14,7 @@ This is a comprehensive Migraine Diary app implemented as a single HTML file wit
 ## Architecture
 
 **Single File Structure:**
-- `tictactoe.html`: Contains all HTML markup, CSS styling, and JavaScript logic
+- `migraine-diary.html`: Contains all HTML markup, CSS styling, and JavaScript logic
 
 ### Data Model
 
@@ -58,7 +58,7 @@ Entries stored in localStorage under key `'migraine_diary_entries'`:
 
 Simply open the HTML file in a browser:
 ```bash
-open tictactoe.html
+open migraine-diary.html
 # or manually open the file in your browser
 ```
 
