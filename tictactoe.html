@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tic Tac Toe</title>
+  <title>Migraine Diary</title>
   <style>
     * {
       box-sizing: border-box;
@@ -15,12 +15,13 @@
       font-family: 'Segoe UI', sans-serif;
       background: #1a1a2e;
       color: #eee;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
       min-height: 100vh;
-      gap: 24px;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 32px;
     }
 
     h1 {
@@ -28,202 +29,907 @@
       font-weight: 700;
       letter-spacing: 2px;
       color: #e0e0e0;
+      margin-bottom: 8px;
     }
 
-    #status {
-      font-size: 1.2rem;
-      color: #a0c4ff;
-      min-height: 1.5em;
-    }
-
-    #board {
-      display: grid;
-      grid-template-columns: repeat(3, 110px);
-      grid-template-rows: repeat(3, 110px);
-      gap: 8px;
-    }
-
-    .cell {
-      background: #16213e;
-      border-radius: 12px;
-      font-size: 3rem;
-      font-weight: bold;
+    #nav {
       display: flex;
-      align-items: center;
+      gap: 12px;
       justify-content: center;
-      cursor: pointer;
-      transition: background 0.15s, transform 0.1s;
-      user-select: none;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
     }
 
-    .cell:hover:not(.taken) {
+    .nav-btn {
+      background: #16213e;
+      color: #a0c4ff;
+      border: 2px solid #a0c4ff44;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    }
+
+    .nav-btn:hover {
       background: #0f3460;
+      border-color: #a0c4ff;
       transform: scale(1.04);
     }
 
-    .cell.x { color: #ff6b9d; }
-    .cell.o { color: #6bcfff; }
-
-    .cell.win {
+    .nav-btn.active {
       background: #0f3460;
-      animation: pulse 0.6s ease-in-out infinite alternate;
+      border-color: #a0c4ff;
+      color: #6bcfff;
     }
 
-    @keyframes pulse {
-      from { box-shadow: 0 0 0px #a0c4ff44; }
-      to   { box-shadow: 0 0 18px #a0c4ff88; }
+    main {
+      max-width: 800px;
+      margin: 0 auto;
     }
 
-    #scores {
-      display: flex;
-      gap: 32px;
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 24px;
     }
 
-    .score-box {
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #a0c4ff;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+    }
+
+    input[type="date"],
+    input[type="time"],
+    input[type="number"],
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 12px;
       background: #16213e;
+      border: 2px solid #a0c4ff44;
+      border-radius: 10px;
+      color: #eee;
+      font-family: inherit;
+      font-size: 1rem;
+      transition: border-color 0.15s;
+    }
+
+    input[type="date"]:focus,
+    input[type="time"]:focus,
+    input[type="number"]:focus,
+    input[type="text"]:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #a0c4ff;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #16213e;
+      outline: none;
+      -webkit-appearance: none;
+      accent-color: #a0c4ff;
+    }
+
+    .range-value {
+      display: inline-block;
+      margin-left: 12px;
+      font-weight: bold;
+      color: #ff6b9d;
+      font-size: 1.1rem;
+    }
+
+    /* Checkbox pills */
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .checkbox-pill {
+      position: relative;
+    }
+
+    .checkbox-pill input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .checkbox-pill label {
+      display: inline-block;
+      margin: 0;
+      padding: 10px 16px;
+      background: #16213e;
+      border: 2px solid #a0c4ff44;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+      font-weight: 500;
+      color: #aaa;
+    }
+
+    .checkbox-pill input[type="checkbox"]:checked + label {
+      background: #0f3460;
+      border-color: #a0c4ff;
+      color: #6bcfff;
+    }
+
+    /* Form buttons */
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    button {
+      padding: 12px 32px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+      background: #0f3460;
+      color: #a0c4ff;
+      border: 2px solid #a0c4ff44;
+      flex: 1;
+    }
+
+    .btn-primary:hover {
+      background: #1a4a7a;
+      transform: scale(1.04);
+    }
+
+    .btn-secondary {
+      background: #16213e;
+      color: #aaa;
+      border: 2px solid #a0c4ff44;
+    }
+
+    .btn-secondary:hover {
+      background: #0f3460;
+      color: #a0c4ff;
+      transform: scale(1.04);
+    }
+
+    .btn-danger {
+      background: #3e1616;
+      color: #ff6b9d;
+      border: 2px solid #ff6b9d44;
+    }
+
+    .btn-danger:hover {
+      background: #4a1a1a;
+      border-color: #ff6b9d;
+      transform: scale(1.04);
+    }
+
+    /* History */
+    .entry-card {
+      background: #16213e;
+      border: 2px solid #a0c4ff44;
       border-radius: 12px;
-      padding: 12px 28px;
+      padding: 20px;
+      margin-bottom: 16px;
+      transition: border-color 0.15s;
+    }
+
+    .entry-card:hover {
+      border-color: #a0c4ff;
+    }
+
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 12px;
+    }
+
+    .entry-date {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #a0c4ff;
+    }
+
+    .entry-time {
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    .severity-badge {
+      display: inline-block;
+      background: #ff6b9d;
+      color: #1a1a2e;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .entry-meta {
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-bottom: 12px;
+    }
+
+    .entry-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #0f3460;
+      color: #6bcfff;
+      padding: 4px 12px;
+      border-radius: 16px;
+      font-size: 0.85rem;
+    }
+
+    .entry-notes {
+      color: #ccc;
+      margin-bottom: 12px;
+      font-style: italic;
+    }
+
+    .entry-medications {
+      color: #aaa;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+    }
+
+    .entry-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .entry-actions button {
+      flex: 1;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    /* Analytics */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: #16213e;
+      border: 2px solid #a0c4ff44;
+      border-radius: 12px;
+      padding: 20px;
       text-align: center;
     }
 
-    .score-label {
+    .stat-label {
       font-size: 0.85rem;
       color: #888;
       text-transform: uppercase;
       letter-spacing: 1px;
+      margin-bottom: 8px;
     }
 
-    .score-value {
-      font-size: 2rem;
+    .stat-value {
+      font-size: 2.2rem;
       font-weight: 700;
-    }
-
-    #x-score .score-value { color: #ff6b9d; }
-    #o-score .score-value { color: #6bcfff; }
-    #tie-score .score-value { color: #aaa; }
-
-    #reset-btn {
-      background: #0f3460;
       color: #a0c4ff;
-      border: 2px solid #a0c4ff44;
-      border-radius: 10px;
-      padding: 12px 32px;
-      font-size: 1rem;
-      cursor: pointer;
-      letter-spacing: 1px;
-      transition: background 0.15s, border-color 0.15s;
     }
 
-    #reset-btn:hover {
-      background: #1a4a7a;
-      border-color: #a0c4ff;
+    .chart-section {
+      margin-bottom: 32px;
+    }
+
+    .chart-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #a0c4ff;
+      margin-bottom: 16px;
+      letter-spacing: 0.5px;
+    }
+
+    .bar-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .bar-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .bar-label {
+      min-width: 120px;
+      font-size: 0.9rem;
+      color: #aaa;
+      text-transform: capitalize;
+    }
+
+    .bar-bg {
+      flex: 1;
+      height: 32px;
+      background: #0f3460;
+      border-radius: 6px;
+      position: relative;
+      border: 1px solid #a0c4ff44;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6bcfff, #a0c4ff);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 8px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: #1a1a2e;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #0f3460;
+      border: 2px solid #a0c4ff;
+      color: #a0c4ff;
+      padding: 16px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      z-index: 1000;
+    }
+
+    #toast.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* SVG Styles */
+    svg {
+      width: 100%;
+      height: 300px;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      #nav {
+        flex-direction: column;
+      }
+
+      .nav-btn {
+        width: 100%;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-actions {
+        flex-direction: column;
+      }
+
+      .form-actions button {
+        width: 100%;
+      }
+
+      .bar-label {
+        min-width: 100px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Tic Tac Toe</h1>
+  <header>
+    <h1>Migraine Diary</h1>
+  </header>
 
-  <div id="scores">
-    <div class="score-box" id="x-score">
-      <div class="score-label">X</div>
-      <div class="score-value" id="x-val">0</div>
-    </div>
-    <div class="score-box" id="tie-score">
-      <div class="score-label">Ties</div>
-      <div class="score-value" id="tie-val">0</div>
-    </div>
-    <div class="score-box" id="o-score">
-      <div class="score-label">O</div>
-      <div class="score-value" id="o-val">0</div>
-    </div>
-  </div>
+  <nav id="nav">
+    <button class="nav-btn active" data-view="log">Log Entry</button>
+    <button class="nav-btn" data-view="history">History</button>
+    <button class="nav-btn" data-view="analytics">Analytics</button>
+  </nav>
 
-  <div id="status">X's turn</div>
+  <main id="main"></main>
 
-  <div id="board">
-    <div class="cell" data-i="0"></div>
-    <div class="cell" data-i="1"></div>
-    <div class="cell" data-i="2"></div>
-    <div class="cell" data-i="3"></div>
-    <div class="cell" data-i="4"></div>
-    <div class="cell" data-i="5"></div>
-    <div class="cell" data-i="6"></div>
-    <div class="cell" data-i="7"></div>
-    <div class="cell" data-i="8"></div>
-  </div>
-
-  <button id="reset-btn">New Game</button>
+  <div id="toast"></div>
 
   <script>
-    const WINS = [
-      [0,1,2],[3,4,5],[6,7,8],
-      [0,3,6],[1,4,7],[2,5,8],
-      [0,4,8],[2,4,6]
-    ];
+    let entries = [];
+    let currentView = 'log';
+    let editingId = null;
 
-    let board, current, gameOver;
-    let scores = { X: 0, O: 0, T: 0 };
+    const painLocations = ['forehead', 'temples', 'back of head', 'behind eyes'];
+    const symptoms = ['nausea', 'light sensitivity', 'sound sensitivity', 'aura', 'vomiting'];
+    const triggers = ['stress', 'sleep deprivation', 'dehydration', 'food', 'caffeine', 'weather', 'hormones'];
 
-    const cells    = document.querySelectorAll('.cell');
-    const status   = document.getElementById('status');
-    const resetBtn = document.getElementById('reset-btn');
+    // Load entries from localStorage
+    function loadEntries() {
+      const data = localStorage.getItem('migraine_diary_entries');
+      entries = data ? JSON.parse(data) : [];
+      entries.sort((a, b) => new Date(b.date + 'T' + b.time) - new Date(a.date + 'T' + a.time));
+    }
 
-    function init() {
-      board    = Array(9).fill('');
-      current  = 'X';
-      gameOver = false;
-      cells.forEach(c => {
-        c.textContent = '';
-        c.className   = 'cell';
+    // Save entries to localStorage
+    function saveEntries() {
+      localStorage.setItem('migraine_diary_entries', JSON.stringify(entries));
+    }
+
+    // Show toast notification
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // Set active view
+    function setView(name) {
+      currentView = name;
+      editingId = null;
+
+      // Update nav buttons
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.view === name);
       });
-      status.textContent = `X's turn`;
+
+      renderView();
     }
 
-    function checkWin(player) {
-      return WINS.find(combo => combo.every(i => board[i] === player)) || null;
+    // Render current view
+    function renderView() {
+      const main = document.getElementById('main');
+      if (currentView === 'log') {
+        main.innerHTML = renderLogForm();
+        attachFormListeners();
+      } else if (currentView === 'history') {
+        main.innerHTML = renderHistory();
+        attachHistoryListeners();
+      } else if (currentView === 'analytics') {
+        main.innerHTML = renderAnalytics();
+      }
     }
 
-    function handleClick(e) {
-      const cell = e.currentTarget;
-      const i    = +cell.dataset.i;
-      if (gameOver || board[i]) return;
+    // Render Log Entry form
+    function renderLogForm() {
+      const now = new Date();
+      const todayStr = now.toISOString().split('T')[0];
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-      board[i]          = current;
-      cell.textContent  = current;
-      cell.classList.add(current.toLowerCase(), 'taken');
+      const entry = editingId ? entries.find(e => e.id === editingId) : null;
 
-      const winning = checkWin(current);
-      if (winning) {
-        gameOver = true;
-        winning.forEach(j => cells[j].classList.add('win'));
-        status.textContent = `${current} wins!`;
-        scores[current]++;
-        updateScores();
+      return `
+        <form id="logForm">
+          <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" id="date" value="${entry?.date || todayStr}" required>
+          </div>
+
+          <div class="form-group">
+            <label for="time">Time</label>
+            <input type="time" id="time" value="${entry?.time || timeStr}" required>
+          </div>
+
+          <div class="form-group">
+            <label for="severity">Severity: <span class="range-value" id="severityValue">${entry?.severity || 5}</span>/10</label>
+            <input type="range" id="severity" min="1" max="10" value="${entry?.severity || 5}">
+          </div>
+
+          <div class="form-group">
+            <label for="duration">Duration (hours)</label>
+            <input type="number" id="duration" min="0.5" step="0.5" value="${entry?.duration || 2}" required>
+          </div>
+
+          <div class="form-group">
+            <label>Pain Location</label>
+            <div class="checkbox-group">
+              ${painLocations.map(loc => `
+                <div class="checkbox-pill">
+                  <input type="checkbox" id="loc-${loc}" name="locations" value="${loc}" ${entry?.locations?.includes(loc) ? 'checked' : ''}>
+                  <label for="loc-${loc}">${loc}</label>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Symptoms</label>
+            <div class="checkbox-group">
+              ${symptoms.map(sym => `
+                <div class="checkbox-pill">
+                  <input type="checkbox" id="sym-${sym}" name="symptoms" value="${sym}" ${entry?.symptoms?.includes(sym) ? 'checked' : ''}>
+                  <label for="sym-${sym}">${sym}</label>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Triggers</label>
+            <div class="checkbox-group">
+              ${triggers.map(trg => `
+                <div class="checkbox-pill">
+                  <input type="checkbox" id="trg-${trg}" name="triggers" value="${trg}" ${entry?.triggers?.includes(trg) ? 'checked' : ''}>
+                  <label for="trg-${trg}">${trg}</label>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="medications">Medications</label>
+            <input type="text" id="medications" placeholder="e.g., Ibuprofen 400mg" value="${entry?.medications || ''}">
+          </div>
+
+          <div class="form-group">
+            <label for="notes">Notes</label>
+            <textarea id="notes" placeholder="Any additional details...">${entry?.notes || ''}</textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">${editingId ? 'Update Entry' : 'Save Entry'}</button>
+            ${editingId ? `<button type="button" class="btn-secondary" id="cancelEdit">Cancel</button>` : ''}
+          </div>
+        </form>
+      `;
+    }
+
+    // Attach form listeners
+    function attachFormListeners() {
+      const form = document.getElementById('logForm');
+      const severity = document.getElementById('severity');
+      const severityValue = document.getElementById('severityValue');
+
+      severity.addEventListener('input', () => {
+        severityValue.textContent = severity.value;
+      });
+
+      form.addEventListener('submit', handleFormSubmit);
+
+      const cancelBtn = document.getElementById('cancelEdit');
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', () => setView('history'));
+      }
+    }
+
+    // Handle form submission
+    function handleFormSubmit(e) {
+      e.preventDefault();
+
+      const date = document.getElementById('date').value;
+      const time = document.getElementById('time').value;
+      const severity = parseInt(document.getElementById('severity').value);
+      const duration = parseFloat(document.getElementById('duration').value);
+      const locations = Array.from(document.querySelectorAll('input[name="locations"]:checked')).map(el => el.value);
+      const symptoms_ = Array.from(document.querySelectorAll('input[name="symptoms"]:checked')).map(el => el.value);
+      const triggers_ = Array.from(document.querySelectorAll('input[name="triggers"]:checked')).map(el => el.value);
+      const medications = document.getElementById('medications').value;
+      const notes = document.getElementById('notes').value;
+
+      if (!date || !time || locations.length === 0) {
+        showToast('Please fill in date, time, and select at least one pain location');
         return;
       }
 
-      if (board.every(v => v)) {
-        gameOver = true;
-        status.textContent = `It's a tie!`;
-        scores.T++;
-        updateScores();
-        return;
+      if (editingId) {
+        const idx = entries.findIndex(e => e.id === editingId);
+        entries[idx] = {
+          id: editingId,
+          date,
+          time,
+          severity,
+          duration,
+          locations,
+          symptoms: symptoms_,
+          triggers: triggers_,
+          medications,
+          notes
+        };
+      } else {
+        entries.unshift({
+          id: Date.now(),
+          date,
+          time,
+          severity,
+          duration,
+          locations,
+          symptoms: symptoms_,
+          triggers: triggers_,
+          medications,
+          notes
+        });
       }
 
-      current = current === 'X' ? 'O' : 'X';
-      status.textContent = `${current}'s turn`;
+      saveEntries();
+      showToast(editingId ? 'Entry updated' : 'Entry saved');
+      setView('history');
     }
 
-    function updateScores() {
-      document.getElementById('x-val').textContent   = scores.X;
-      document.getElementById('o-val').textContent   = scores.O;
-      document.getElementById('tie-val').textContent = scores.T;
+    // Render History
+    function renderHistory() {
+      if (entries.length === 0) {
+        return `
+          <div class="empty-state">
+            <div class="empty-state-icon">📝</div>
+            <p>No migraine entries yet. Start by logging your first migraine.</p>
+          </div>
+        `;
+      }
+
+      return `
+        <div>
+          ${entries.map(entry => `
+            <div class="entry-card">
+              <div class="entry-header">
+                <div>
+                  <div class="entry-date">${new Date(entry.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</div>
+                  <div class="entry-time">${entry.time}</div>
+                </div>
+                <div class="severity-badge">Severity: ${entry.severity}</div>
+              </div>
+              <div class="entry-meta">Duration: ${entry.duration} hours</div>
+              ${entry.locations.length > 0 ? `<div class="entry-tags">${entry.locations.map(l => `<span class="tag">${l}</span>`).join('')}</div>` : ''}
+              ${entry.symptoms.length > 0 ? `<div class="entry-tags">${entry.symptoms.map(s => `<span class="tag">${s}</span>`).join('')}</div>` : ''}
+              ${entry.triggers.length > 0 ? `<div class="entry-tags">${entry.triggers.map(t => `<span class="tag">${t}</span>`).join('')}</div>` : ''}
+              ${entry.medications ? `<div class="entry-medications">💊 ${entry.medications}</div>` : ''}
+              ${entry.notes ? `<div class="entry-notes">"${entry.notes}"</div>` : ''}
+              <div class="entry-actions">
+                <button class="btn-secondary edit-btn" data-id="${entry.id}">Edit</button>
+                <button class="btn-danger delete-btn" data-id="${entry.id}">Delete</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
     }
 
-    cells.forEach(c => c.addEventListener('click', handleClick));
-    resetBtn.addEventListener('click', init);
+    // Attach history listeners
+    function attachHistoryListeners() {
+      document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          editingId = parseInt(btn.dataset.id);
+          setView('log');
+        });
+      });
 
-    init();
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = parseInt(btn.dataset.id);
+          if (confirm('Are you sure you want to delete this entry?')) {
+            entries = entries.filter(e => e.id !== id);
+            saveEntries();
+            showToast('Entry deleted');
+            renderView();
+          }
+        });
+      });
+    }
+
+    // Render Analytics
+    function renderAnalytics() {
+      if (entries.length === 0) {
+        return `
+          <div class="empty-state">
+            <div class="empty-state-icon">📊</div>
+            <p>No data to analyze yet. Start logging migraines to see patterns.</p>
+          </div>
+        `;
+      }
+
+      // Calculate stats
+      const now = new Date();
+      const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const thisMonthEntries = entries.filter(e => new Date(e.date) >= thisMonth);
+      const avgSeverity = Math.round(entries.reduce((sum, e) => sum + e.severity, 0) / entries.length);
+
+      // Most common trigger
+      const triggerCounts = {};
+      entries.forEach(e => {
+        e.triggers.forEach(t => {
+          triggerCounts[t] = (triggerCounts[t] || 0) + 1;
+        });
+      });
+      const mostCommonTrigger = Object.entries(triggerCounts).sort((a, b) => b[1] - a[1])[0];
+
+      // Frequency data
+      const triggerFreq = {};
+      entries.forEach(e => {
+        e.triggers.forEach(t => {
+          triggerFreq[t] = (triggerFreq[t] || 0) + 1;
+        });
+      });
+
+      const symptomFreq = {};
+      entries.forEach(e => {
+        e.symptoms.forEach(s => {
+          symptomFreq[s] = (symptomFreq[s] || 0) + 1;
+        });
+      });
+
+      // Severity by date for chart
+      const severityByDate = {};
+      entries.forEach(e => {
+        severityByDate[e.date] = (severityByDate[e.date] || 0) + e.severity;
+      });
+      const last7Days = Object.entries(severityByDate)
+        .sort((a, b) => new Date(b[0]) - new Date(a[0]))
+        .slice(0, 7)
+        .reverse();
+
+      return `
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">This Month</div>
+            <div class="stat-value">${thisMonthEntries.length}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">All-Time</div>
+            <div class="stat-value">${entries.length}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Avg Severity</div>
+            <div class="stat-value">${avgSeverity}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Most Common</div>
+            <div class="stat-value">${mostCommonTrigger ? mostCommonTrigger[0] : '—'}</div>
+          </div>
+        </div>
+
+        ${Object.keys(triggerFreq).length > 0 ? `
+          <div class="chart-section">
+            <div class="chart-title">Trigger Frequency</div>
+            <div class="bar-chart">
+              ${Object.entries(triggerFreq)
+                .sort((a, b) => b[1] - a[1])
+                .map(([trigger, count]) => {
+                  const maxCount = Math.max(...Object.values(triggerFreq));
+                  const percent = (count / maxCount) * 100;
+                  return `
+                    <div class="bar-item">
+                      <div class="bar-label">${trigger}</div>
+                      <div class="bar-bg">
+                        <div class="bar-fill" style="width: ${percent}%">${count}</div>
+                      </div>
+                    </div>
+                  `;
+                })
+                .join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        ${Object.keys(symptomFreq).length > 0 ? `
+          <div class="chart-section">
+            <div class="chart-title">Symptom Frequency</div>
+            <div class="bar-chart">
+              ${Object.entries(symptomFreq)
+                .sort((a, b) => b[1] - a[1])
+                .map(([symptom, count]) => {
+                  const maxCount = Math.max(...Object.values(symptomFreq));
+                  const percent = (count / maxCount) * 100;
+                  return `
+                    <div class="bar-item">
+                      <div class="bar-label">${symptom}</div>
+                      <div class="bar-bg">
+                        <div class="bar-fill" style="width: ${percent}%">${count}</div>
+                      </div>
+                    </div>
+                  `;
+                })
+                .join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        ${last7Days.length > 0 ? `
+          <div class="chart-section">
+            <div class="chart-title">Severity Over Time</div>
+            ${buildSeverityChart(last7Days)}
+          </div>
+        ` : ''}
+      `;
+    }
+
+    // Build SVG bar chart for severity
+    function buildSeverityChart(data) {
+      const width = 800;
+      const height = 300;
+      const padding = 40;
+      const graphWidth = width - padding * 2;
+      const graphHeight = height - padding * 2;
+      const barWidth = graphWidth / data.length;
+
+      const maxSeverity = Math.max(...data.map(d => d[1]), 10);
+      const scale = graphHeight / maxSeverity;
+
+      let svg = `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
+
+      // Axes
+      svg += `<line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="#a0c4ff44" stroke-width="2"/>`;
+      svg += `<line x1="${padding}" y1="${padding}" x2="${padding}" y2="${height - padding}" stroke="#a0c4ff44" stroke-width="2"/>`;
+
+      // Grid lines
+      for (let i = 1; i <= 5; i++) {
+        const y = padding + (graphHeight / 5) * i;
+        svg += `<line x1="${padding}" y1="${height - y}" x2="${width - padding}" y2="${height - y}" stroke="#a0c4ff22" stroke-width="1" stroke-dasharray="4"/>`;
+      }
+
+      // Bars
+      data.forEach((d, i) => {
+        const x = padding + barWidth * i + barWidth * 0.1;
+        const barH = d[1] * scale;
+        const y = height - padding - barH;
+        const dateObj = new Date(d[0]);
+        const label = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+        svg += `<rect x="${x}" y="${y}" width="${barWidth * 0.8}" height="${barH}" fill="#6bcfff" rx="4"/>`;
+        svg += `<text x="${x + barWidth * 0.4}" y="${height - padding + 20}" text-anchor="middle" font-size="12" fill="#888">${label}</text>`;
+        svg += `<text x="${x + barWidth * 0.4}" y="${y - 5}" text-anchor="middle" font-size="12" fill="#a0c4ff" font-weight="bold">${d[1]}</text>`;
+      });
+
+      // Y-axis label
+      svg += `<text x="15" y="${padding - 10}" font-size="12" fill="#888">Severity</text>`;
+
+      svg += `</svg>`;
+      return svg;
+    }
+
+    // Initialize
+    loadEntries();
+
+    // Nav button listeners
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => setView(btn.dataset.view));
+    });
+
+    // Initial render
+    renderView();
   </script>
 </body>
 </html>

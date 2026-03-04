@@ -4,31 +4,57 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a browser-based Tic Tac Toe game implemented as a single HTML file with embedded CSS and JavaScript. The game includes:
-- Interactive 3x3 game board
-- Turn tracking (X vs O)
-- Win detection (8 possible winning combinations)
-- Tie detection
-- Score tracking across multiple games
-- Visual feedback with animations and hover effects
+This is a comprehensive Migraine Diary app implemented as a single HTML file with embedded CSS and JavaScript. The app helps track and analyze migraine patterns with detailed symptom/trigger data. Features include:
+- Log entries with date, time, severity (1-10), duration, location, symptoms, triggers
+- Complete migraine history with edit/delete capabilities
+- Pattern analytics with stats, frequency charts, and severity tracking
+- localStorage persistence across sessions
+- Dark theme responsive design with no external dependencies
 
 ## Architecture
 
 **Single File Structure:**
 - `tictactoe.html`: Contains all HTML markup, CSS styling, and JavaScript logic
 
+### Data Model
+
+Entries stored in localStorage under key `'migraine_diary_entries'`:
+```js
+{
+  id: 1699564800000,              // unique timestamp ID
+  date: '2025-03-03',
+  time: '14:30',
+  severity: 7,                    // 1-10 scale
+  duration: 4,                    // hours (0.5 step increments)
+  locations: ['temples'],         // from fixed list
+  symptoms: ['nausea'],           // from fixed list
+  triggers: ['stress'],           // from fixed list
+  medications: 'Ibuprofen 400mg',
+  notes: 'Free text notes'
+}
+```
+
 ### Code Organization
 
-1. **Markup (lines 123-155)**: Game UI with board grid, status display, score boxes, and reset button
-2. **Styles (lines 7-121)**: Dark theme styling with responsive design, hover effects, and win animations
-3. **JavaScript (lines 157-227)**:
-   - `WINS`: Array of 8 winning combinations (rows, columns, diagonals)
-   - `board`: Array representing the 3x3 game state
-   - `checkWin()`: Detects winning condition for current player
-   - `handleClick()`: Main game logic for moves, win/tie detection, score updates
-   - `updateScores()`: Updates the score display
+1. **Markup**: Header, nav tabs (Log Entry | History | Analytics), main content area, toast notification
+2. **Styles**: Dark theme (#1a1a2e background, #16213e cards), responsive design, pill-button checkboxes, bar/SVG charts
+3. **JavaScript**:
+   - `loadEntries()` / `saveEntries()`: localStorage management
+   - `setView(name)`: Switch between three views (log, history, analytics)
+   - `renderView()`: Dispatch to view-specific render functions
+   - `renderLogForm()`: Build form with pre-population for editing
+   - `handleFormSubmit()`: Validate, create/update entry, persist, navigate
+   - `renderHistory()`: List entries with edit/delete buttons
+   - `renderAnalytics()`: Stats grid, frequency bar charts, severity SVG chart
+   - `buildSeverityChart()`: Pure JS SVG bar chart generation
 
-## Running the Game
+### Three Views
+
+1. **Log Entry**: Form to log a new migraine or edit existing. Pre-populates when editing.
+2. **History**: Chronological list of entries (newest first) with tags and action buttons.
+3. **Analytics**: This Month count, All-Time count, Avg Severity, Most Common trigger, plus frequency charts.
+
+## Running the App
 
 Simply open the HTML file in a browser:
 ```bash
@@ -66,7 +92,13 @@ Keep commits atomic and focused on single features, fixes, or improvements. Push
 
 ## Key Development Notes
 
-- The game board is a flat 9-element array (indices 0-8 map to 3x3 grid positions)
-- CSS classes on cells: `x` and `o` for styling, `taken` to prevent re-clicking, `win` for animation
-- Score state is stored in a `scores` object (X, O, T for ties)
+- **Pain Locations**: forehead, temples, back of head, behind eyes
+- **Symptoms**: nausea, light sensitivity, sound sensitivity, aura, vomiting
+- **Triggers**: stress, sleep deprivation, dehydration, food, caffeine, weather, hormones
+- Checkbox groups use `:has(input:checked)` CSS for styling
+- Edit mode sets `editingId` and pre-populates form with entry data
+- History entries sorted by date/time (newest first)
+- Analytics stats calculated on-the-fly from entries array
+- SVG severity chart generated with pure JavaScript (no charting library)
+- Responsive design handles mobile with single-column layout
 - No external dependencies - fully self-contained
